@@ -1,0 +1,92 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Функция для вычисления членов последовательности
+def x_n(n):
+    return (n + 5) / (n + 3) * np.arccos(np.sqrt((2 + (-1)**n) / 4))
+
+# 1. Генерация последовательности
+N = 100
+k = np.arange(1, N + 1)
+xk = x_n(k)
+
+plt.figure(figsize=(10, 6))
+plt.plot(k, xk, label="x_n", marker="o", linestyle="None")
+plt.title("График последовательности x_n")
+plt.xlabel("n")
+plt.ylabel("x_n")
+plt.grid()
+plt.legend()
+plt.show()
+
+# 2. Отображение первых 100 точек и аналитические значения
+sup_xn = np.max(xk)
+inf_xn = np.min(xk)
+lim_xn = sup_xn  # Предел равен супремуму, так как ряд неограниченно возрастает
+
+plt.figure(figsize=(10, 6))
+plt.plot(k, xk, label="x_n", marker="o", linestyle="None")
+plt.axhline(sup_xn, color="red", linestyle="--", label="sup(x_n)")
+plt.axhline(inf_xn, color="blue", linestyle="--", label="inf(x_n)")
+plt.axhline(lim_xn, color="green", linestyle="--", label="lim(x_n)")
+plt.title("Первые 100 точек x_n с аналитическими линиями")
+plt.xlabel("n")
+plt.ylabel("x_n")
+plt.grid()
+plt.legend()
+plt.show()
+
+# 3. Выделение сходящейся подпоследовательности
+subsequence = xk[::2]  # Например, берем только четные индексы
+plt.figure(figsize=(10, 6))
+plt.plot(k, xk, label="x_n", marker="o", linestyle="None")
+plt.plot(k[::2], subsequence, "ro", label="Сходящаяся подпоследовательность")
+plt.title("Сходящаяся подпоследовательность x_n")
+plt.xlabel("n")
+plt.ylabel("x_n")
+plt.grid()
+plt.legend()
+plt.show()
+
+# 4-6. Проверка попадания в ε-окрестность
+epsilons = [0.1, 0.05, 0.001, 0.0001]
+for epsilon in epsilons:
+    n0 = np.argmax(np.abs(xk - lim_xn) < epsilon)
+    in_epsilon = np.abs(xk - lim_xn) < epsilon
+    plt.figure(figsize=(10, 6))
+    plt.plot(k, xk, label="x_n", marker="o", linestyle="None")
+    plt.axhline(lim_xn + epsilon, color="orange", linestyle="--", label=f"lim + {epsilon}")
+    plt.axhline(lim_xn - epsilon, color="orange", linestyle="--", label=f"lim - {epsilon}")
+    plt.plot(k[in_epsilon], xk[in_epsilon], "ro", label=f"Точки в {epsilon}-окрестности")
+    plt.title(f"Точки в {epsilon}-окрестности предела")
+    plt.xlabel("n")
+    plt.ylabel("x_n")
+    plt.grid()
+    plt.legend()
+    plt.show()
+
+# 7. Выделение точной границы (например, inf(x_n))
+plt.figure(figsize=(10, 6))
+plt.plot(k, xk, label="x_n", marker="o", linestyle="None")
+plt.axhline(inf_xn, color="blue", linestyle="--", label="inf(x_n)")
+plt.title("Граница inf(x_n)")
+plt.xlabel("n")
+plt.ylabel("x_n")
+plt.grid()
+plt.legend()
+plt.show()
+
+# 8-10. Нахождение x_m, где x_m > sup(x_n) - ε
+for epsilon in epsilons:
+    condition = xk > sup_xn - epsilon
+    m = np.argmax(condition) + 1  # Номер элемента
+    plt.figure(figsize=(10, 6))
+    plt.plot(k, xk, label="x_n", marker="o", linestyle="None")
+    plt.axhline(sup_xn - epsilon, color="purple", linestyle="--", label=f"sup - {epsilon}")
+    plt.plot(m, xk[m - 1], "ro", label=f"x_m (m={m})")
+    plt.title(f"Точка x_m при ε = {epsilon}")
+    plt.xlabel("n")
+    plt.ylabel("x_n")
+    plt.grid()
+    plt.legend()
+    plt.show()
